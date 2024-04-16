@@ -26,9 +26,15 @@ class MainPage extends StatelessWidget {
   }
 }
 
-class _Body extends StatelessWidget {
+class _Body extends StatefulWidget {
   const _Body();
 
+  @override
+  State<_Body> createState() => _BodyState();
+}
+
+class _BodyState extends State<_Body> {
+  Widget? title;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,87 +56,131 @@ class _Body extends StatelessWidget {
               context.read<BuildingObjectsBloc>().add(BuildingObjectsLoad());
             }
           },
-          child: CustomScrollView(
-            slivers: [
-              SliverAppBar(
-                pinned: true,
-                expandedHeight: 176,
-                flexibleSpace: FlexibleSpaceBar(
-                  background: Padding(
-                    padding: const EdgeInsets.only(
-                      left: 16.0,
-                      right: 16.0,
-                      top: 76,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: NestedScrollView(
+            headerSliverBuilder: (context, innerBoxIsScrolled) {
+              return <Widget>[
+                SliverOverlapAbsorber(
+                  handle:
+                      NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                  sliver: SliverAppBar(
+                    backgroundColor: innerBoxIsScrolled ? Colors.white : null,
+                    pinned: true,
+                    stretch: true,
+                    expandedHeight: 176.0,
+                    centerTitle: true,
+                    title: innerBoxIsScrolled
+                        ? Text(
+                            'Объекты',
+                            style: Theme.of(context).textTheme.titleLarge,
+                          )
+                        : null,
+                    flexibleSpace: FlexibleSpaceBar(
+                      centerTitle: true,
+                      background: Padding(
+                        padding: const EdgeInsets.only(
+                          left: 16.0,
+                          right: 16.0,
+                          top: 76,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            Text(
-                              'Объекты',
-                              style: Theme.of(context).textTheme.headlineLarge,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Объекты',
+                                  style:
+                                      Theme.of(context).textTheme.headlineLarge,
+                                ),
+                                IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(
+                                    Icons.info_outline_rounded,
+                                  ),
+                                ),
+                              ],
                             ),
-                            IconButton(
-                              onPressed: () {},
-                              icon: const Icon(
-                                Icons.info_outline_rounded,
+                            const SizedBox(
+                              height: 12.0,
+                            ),
+                            TextField(
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(
-                          height: 12.0,
-                        ),
-                        TextField(
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                sliver: BlocBuilder<BuildingObjectsBloc, BuildingObjectsState>(
-                  builder: (context, state) {
-                    if (state is BuildingObjectsLoading) {
-                      return const SliverFillRemaining(
-                        child: Center(
-                          child: CircularProgressIndicator.adaptive(),
-                        ),
-                      );
-                    }
-                    if (state is BuildingObjectsDataRetrieved) {
-                      return SliverList.separated(
-                        itemBuilder: (context, index) {
-                          final item = state.objects[index];
-                          return ObjectListItem(
-                            title: item.title,
-                            pointsTotal: item.totalPointsCount,
-                            pointsRemain: item.remainingPoints,
-                            memoryPredict: item.totalPointsCount * 5,
-                            memoryRemain: 0,
-                            onTap: () {},
-                          );
-                        },
-                        separatorBuilder: (context, index) {
-                          return const SizedBox(
-                            height: 12.0,
-                          );
-                        },
-                      );
-                    }
-                    return const SliverToBoxAdapter();
-                  },
-                ),
-              ),
-            ],
+              ];
+            },
+            body: _ItemsView(),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _ItemsView extends StatelessWidget {
+  const _ItemsView({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return RefreshIndicator.adaptive(
+      onRefresh: () async {
+        if (context.read<BuildingObjectsBloc>().state
+            is! BuildingObjectsLoading) {
+          context.read<BuildingObjectsBloc>().add(BuildingObjectsLoad());
+        }
+      },
+      child: CustomScrollView(
+        slivers: [
+          SliverOverlapInjector(
+            // This is the flip side of the SliverOverlapAbsorber above.
+            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            sliver: BlocBuilder<BuildingObjectsBloc, BuildingObjectsState>(
+              builder: (context, state) {
+                if (state is BuildingObjectsLoading) {
+                  return const SliverFillRemaining(
+                    child: Center(
+                      child: CircularProgressIndicator.adaptive(),
+                    ),
+                  );
+                }
+                if (state is BuildingObjectsDataRetrieved) {
+                  return SliverList.separated(
+                    itemBuilder: (context, index) {
+                      final item = state.objects[index];
+                      return ObjectListItem(
+                        title: item.title,
+                        pointsTotal: item.totalPointsCount,
+                        pointsRemain: item.remainingPoints,
+                        memoryPredict: item.totalPointsCount * 5,
+                        memoryRemain: 0,
+                        onTap: () {},
+                      );
+                    },
+                    separatorBuilder: (context, index) {
+                      return const SizedBox(
+                        height: 12.0,
+                      );
+                    },
+                  );
+                }
+                return const SliverToBoxAdapter();
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
