@@ -1,0 +1,40 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.init.dart"
+    - ".*/**"
+    - "**/*.freezed.dart"
+    
+  language:
+    strict-casts: true
+    strict-inference: true
+    strict-raw-types: true
+  errors:
+    must_call_super: error
+    invalid_override_of_non_virtual_member: error
+    invalid_use_of_protected_member: error
+    prefer_relative_imports: error
+    require_trailing_commas: info
+    avoid_positional_boolean_parameters: info
+    unawaited_futures: warning
+    use_named_constants: info
+    unnecessary_parenthesis: info
+    avoid_void_async: warning
+    directives_ordering: info
+    only_throw_errors: error
+
+linter:
+  rules:
+    - prefer_relative_imports
+    - require_trailing_commas
+    - avoid_positional_boolean_parameters
+    - unawaited_futures
+    - use_named_constants
+    - unnecessary_parenthesis
+    - avoid_void_async
+    - directives_ordering
+    - only_throw_errors
+    - sort_constructors_first
+    - prefer_single_quotes
