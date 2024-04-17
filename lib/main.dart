@@ -42,6 +42,12 @@ class MainApp extends StatelessWidget {
                 height: 20 / 14,
                 color: Colors.black,
               ),
+              bodyLarge: GoogleFonts.roboto(
+                fontWeight: FontWeight.w400,
+                fontSize: 16,
+                height: 24 / 16,
+                color: Colors.black,
+              ),
               labelSmall: GoogleFonts.roboto(
                 fontWeight: FontWeight.w500,
                 fontSize: 11,
@@ -54,6 +60,12 @@ class MainApp extends StatelessWidget {
                 ),
               ),
             ),
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          contentPadding: EdgeInsets.all(8.0),
+        ),
       ),
       home: MainPage(),
     );

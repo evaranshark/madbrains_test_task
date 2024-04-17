@@ -14,10 +14,10 @@ class BuildingObjectsBloc
     on<BuildingObjectsLoad>((event, emit) async {
       emit(BuildingObjectsLoading());
       try {
-        final data = await _repo.fetchObjects();
+        _objects = await _repo.fetchObjects();
         emit(
           BuildingObjectsDataRetrieved(
-            objects: data,
+            objects: _objects!.where(_matchesName).toList(),
           ),
         );
       } on Exception catch (e) {
@@ -28,7 +28,24 @@ class BuildingObjectsBloc
         );
       }
     });
+    on<BuildingObjectsFilter>(
+      (event, emit) {
+        _nameFilter = event.pattern.toLowerCase();
+        emit(
+          BuildingObjectsDataRetrieved(
+            objects: _objectsFiltered ?? [],
+          ),
+        );
+      },
+    );
   }
 
   final BuildingsRepository _repo;
+  List<BuildingObject>? _objects;
+  String _nameFilter = '';
+  List<BuildingObject>? get _objectsFiltered =>
+      _objects?.where(_matchesName).toList();
+
+  bool _matchesName(BuildingObject element) =>
+      element.title.toLowerCase().contains(_nameFilter);
 }

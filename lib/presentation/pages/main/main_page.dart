@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../domain/repository/buildings_repository.dart';
 import '../../../utils/services.dart';
+import '../../widgets/app_bar_with_search.dart';
 import '../../widgets/object_list_item.dart';
 import 'bloc/building_objects_bloc.dart';
 
@@ -34,7 +35,31 @@ class _Body extends StatefulWidget {
 }
 
 class _BodyState extends State<_Body> {
-  Widget? title;
+  late final TextEditingController _searchController;
+  final searchFocus = FocusNode();
+  final appBarSearchFocus = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController();
+    _searchController.addListener(onSearchFieldChanged);
+  }
+
+  @override
+  void dispose() {
+    _searchController.removeListener(onSearchFieldChanged);
+    _searchController.dispose();
+    searchFocus.dispose();
+    super.dispose();
+  }
+
+  void onSearchFieldChanged() {
+    context
+        .read<BuildingObjectsBloc>()
+        .add(BuildingObjectsFilter(pattern: _searchController.text));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,24 +83,25 @@ class _BodyState extends State<_Body> {
           },
           child: NestedScrollView(
             headerSliverBuilder: (context, innerBoxIsScrolled) {
+              if (innerBoxIsScrolled && searchFocus.hasFocus) {
+                appBarSearchFocus.requestFocus();
+              }
               return <Widget>[
                 SliverOverlapAbsorber(
                   handle:
                       NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                   sliver: SliverAppBar(
-                    backgroundColor: innerBoxIsScrolled ? Colors.white : null,
-                    pinned: true,
-                    stretch: true,
                     expandedHeight: 176.0,
-                    centerTitle: true,
+                    pinned: true,
                     title: innerBoxIsScrolled
-                        ? Text(
-                            'Объекты',
-                            style: Theme.of(context).textTheme.titleLarge,
+                        ? AppBarMainRow(
+                            controller: _searchController,
+                            initialCollapsed: _searchController.text.isEmpty,
+                            focusNode: appBarSearchFocus,
                           )
                         : null,
                     flexibleSpace: FlexibleSpaceBar(
-                      centerTitle: true,
+                      // centerTitle: true,
                       background: Padding(
                         padding: const EdgeInsets.only(
                           left: 16.0,
@@ -105,9 +131,8 @@ class _BodyState extends State<_Body> {
                               height: 12.0,
                             ),
                             TextField(
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                              ),
+                              controller: _searchController,
+                              focusNode: searchFocus,
                             ),
                           ],
                         ),
@@ -117,7 +142,7 @@ class _BodyState extends State<_Body> {
                 ),
               ];
             },
-            body: _ItemsView(),
+            body: const _ItemsView(),
           ),
         ),
       ),
@@ -157,6 +182,13 @@ class _ItemsView extends StatelessWidget {
                   );
                 }
                 if (state is BuildingObjectsDataRetrieved) {
+                  if (state.objects.isEmpty) {
+                    return const SliverFillRemaining(
+                      child: Center(
+                        child: Text('Ничего не найдено'),
+                      ),
+                    );
+                  }
                   return SliverList.separated(
                     itemBuilder: (context, index) {
                       final item = state.objects[index];
@@ -174,6 +206,7 @@ class _ItemsView extends StatelessWidget {
                         height: 12.0,
                       );
                     },
+                    itemCount: state.objects.length,
                   );
                 }
                 return const SliverToBoxAdapter();
