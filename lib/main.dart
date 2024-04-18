@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-import 'presentation/pages/main/main_page.dart';
+import 'utils/router.dart';
 import 'utils/services.dart';
+import 'utils/theme_values.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -10,12 +10,18 @@ void main() {
   runApp(const MainApp());
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatefulWidget {
   const MainApp({super.key});
 
   @override
+  State<MainApp> createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> {
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    final themeValues = services.get<ThemeValues>();
+    return MaterialApp.router(
       theme: ThemeData.light().copyWith(
         scaffoldBackgroundColor: const Color.fromARGB(255, 238, 242, 255),
         colorScheme: const ColorScheme.light(
@@ -23,51 +29,44 @@ class MainApp extends StatelessWidget {
           surface: Colors.white,
           surfaceTint: Colors.transparent,
         ),
-        appBarTheme: AppBarTheme(
+        appBarTheme: const AppBarTheme(
           backgroundColor: Color.fromARGB(255, 238, 242, 255),
         ),
         snackBarTheme: ThemeData.light().snackBarTheme.copyWith(
               behavior: SnackBarBehavior.floating,
             ),
         textTheme: ThemeData.light().textTheme.copyWith(
-              titleMedium: GoogleFonts.roboto(
-                fontWeight: FontWeight.w500,
-                fontSize: 16,
-                height: 24 / 16,
-                color: Colors.black,
-              ),
-              bodyMedium: GoogleFonts.roboto(
-                fontWeight: FontWeight.w400,
-                fontSize: 14,
-                height: 20 / 14,
-                color: Colors.black,
-              ),
-              bodyLarge: GoogleFonts.roboto(
-                fontWeight: FontWeight.w400,
-                fontSize: 16,
-                height: 24 / 16,
-                color: Colors.black,
-              ),
-              labelSmall: GoogleFonts.roboto(
-                fontWeight: FontWeight.w500,
-                fontSize: 11,
-                height: 16 / 11,
-                color: const Color.fromARGB(
-                  255,
-                  107,
-                  108,
-                  108,
-                ),
-              ),
+              titleMedium: themeValues.titleMedium,
+              bodyMedium: themeValues.bodyMedium,
+              bodyLarge: themeValues.bodyLarge,
+              labelSmall: themeValues.labelSmall,
+              labelMedium: themeValues.labelMedium,
             ),
         inputDecorationTheme: InputDecorationTheme(
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8.0),
           ),
-          contentPadding: EdgeInsets.all(8.0),
+          contentPadding: const EdgeInsets.all(8.0),
+        ),
+        navigationBarTheme: NavigationBarThemeData(
+          indicatorColor: Colors.transparent,
+          iconTheme: MaterialStateProperty.resolveWith<IconThemeData>(
+            (states) => const IconThemeData.fallback().copyWith(
+              color: (states.contains(MaterialState.selected)
+                  ? themeValues.selectedColor
+                  : themeValues.unselectedColor),
+            ),
+          ),
+          labelTextStyle: MaterialStateProperty.resolveWith<TextStyle>(
+            (states) => themeValues.labelMedium.copyWith(
+              color: (states.contains(MaterialState.selected)
+                  ? themeValues.selectedColor
+                  : themeValues.unselectedColor),
+            ),
+          ),
         ),
       ),
-      home: MainPage(),
+      routerConfig: services.get<AppRouter>().router,
     );
   }
 }
