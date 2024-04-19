@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../utils/services.dart';
+import '../../utils/theme_values.dart';
+
 class ObjectListItem extends StatelessWidget {
   const ObjectListItem({
     super.key,
@@ -23,6 +26,7 @@ class ObjectListItem extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Card(
+        elevation: 3.0,
         child: Padding(
           padding: const EdgeInsets.all(
             16.0,

@@ -18,6 +18,7 @@ dependencies:
   go_router: ^13.2.4
   google_fonts: ^6.2.0
   json_annotation: ^4.8.1
+  storage_space: ^1.1.0
 
 dev_dependencies:
   flutter_test:

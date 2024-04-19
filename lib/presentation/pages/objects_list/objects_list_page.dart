@@ -19,9 +19,11 @@ class ObjectsListPage extends StatelessWidget {
         BlocProvider(
           create: (_) => BuildingObjectsBloc(
             repository: services.get<BuildingsRepository>(),
-          )..add(
+          )
+            ..add(
               BuildingObjectsLoad(),
-            ),
+            )
+            ..add(BuildingObjectsLoadMemoryInfo()),
         ),
       ],
       child: const _Body(),
@@ -123,6 +125,8 @@ class _AppBar extends StatelessWidget {
     return SliverOverlapAbsorber(
       handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
       sliver: SliverAppBar(
+        forceElevated: isScrolled,
+        elevation: 10.0,
         expandedHeight: 176.0,
         pinned: true,
         backgroundColor: isScrolled
@@ -198,7 +202,9 @@ class _ItemsView extends StatelessWidget {
       onRefresh: () async {
         if (context.read<BuildingObjectsBloc>().state
             is! BuildingObjectsLoading) {
-          context.read<BuildingObjectsBloc>().add(BuildingObjectsLoad());
+          context.read<BuildingObjectsBloc>()
+            ..add(BuildingObjectsLoad())
+            ..add(BuildingObjectsLoadMemoryInfo());
         }
       },
       child: CustomScrollView(
@@ -234,7 +240,7 @@ class _ItemsView extends StatelessWidget {
                         pointsTotal: item.totalPointsCount,
                         pointsRemain: item.remainingPoints,
                         memoryPredict: item.totalPointsCount * 5,
-                        memoryRemain: 0,
+                        memoryRemain: state.freeMemory ?? 0,
                         onTap: () {
                           context.read<BuildingObjectsBloc>().add(
                                 BuildingObjectsSelectObject(

@@ -15,3 +15,5 @@ class BuildingObjectsSelectObject extends BuildingObjectsEvent {
 
   final BuildingObject object;
 }
+
+class BuildingObjectsLoadMemoryInfo extends BuildingObjectsEvent {}

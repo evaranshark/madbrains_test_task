@@ -29,9 +29,14 @@ class _MainAppState extends State<MainApp> {
           surface: themeValues.colors.surfaceMain,
           surfaceTint: Colors.transparent,
           primary: themeValues.colors.primary,
+          shadow: themeValues.colors.surfaceShadow,
         ),
+        shadowColor: themeValues.colors.surfaceShadow,
         appBarTheme: AppBarTheme(
+          elevation: 10.0,
           backgroundColor: themeValues.colors.surfaceMain,
+          shadowColor: themeValues.colors.surfaceShadow,
+          surfaceTintColor: themeValues.colors.surfaceShadow,
         ),
         snackBarTheme: ThemeData.light().snackBarTheme.copyWith(
               behavior: SnackBarBehavior.floating,
@@ -50,6 +55,8 @@ class _MainAppState extends State<MainApp> {
           contentPadding: const EdgeInsets.all(8.0),
         ),
         navigationBarTheme: NavigationBarThemeData(
+          elevation: 10.0,
+          shadowColor: themeValues.colors.surfaceShadow,
           indicatorColor: Colors.transparent,
           iconTheme: MaterialStateProperty.resolveWith<IconThemeData>(
             (states) => const IconThemeData.fallback().copyWith(

@@ -53,7 +53,7 @@ class ColorValues {
     111,
     244,
   );
-  final primary50 = Color.fromARGB(255, 235, 239, 254);
+  final primary50 = const Color.fromARGB(255, 235, 239, 254);
   final unselected = const Color.fromARGB(
     255,
     68,
@@ -64,4 +64,5 @@ class ColorValues {
   final success = const Color.fromARGB(255, 76, 216, 116);
   final successLight = const Color.fromARGB(255, 227, 249, 235);
   final surfaceMain = Colors.white;
+  final surfaceShadow = const Color.fromARGB(80, 160, 162, 216);
 }
