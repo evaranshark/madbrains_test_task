@@ -38,6 +38,11 @@ class BuildingObjectsBloc
         );
       },
     );
+    on<BuildingObjectsSelectObject>(
+      (event, emit) {
+        _repo.selectObject(event.object);
+      },
+    );
   }
 
   final BuildingsRepository _repo;

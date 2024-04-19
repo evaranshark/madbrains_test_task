@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../domain/repository/buildings_repository.dart';
 import '../../../utils/services.dart';
+import '../../../utils/theme_values.dart';
 import '../../widgets/app_bar_with_search.dart';
 import '../../widgets/object_list_item.dart';
 import 'bloc/building_objects_bloc.dart';
@@ -87,58 +89,11 @@ class _BodyState extends State<_Body> {
                 appBarSearchFocus.requestFocus();
               }
               return <Widget>[
-                SliverOverlapAbsorber(
-                  handle:
-                      NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                  sliver: SliverAppBar(
-                    expandedHeight: 176.0,
-                    pinned: true,
-                    title: innerBoxIsScrolled
-                        ? AppBarMainRow(
-                            controller: _searchController,
-                            initialCollapsed: _searchController.text.isEmpty,
-                            focusNode: appBarSearchFocus,
-                          )
-                        : null,
-                    flexibleSpace: FlexibleSpaceBar(
-                      // centerTitle: true,
-                      background: Padding(
-                        padding: const EdgeInsets.only(
-                          left: 16.0,
-                          right: 16.0,
-                          top: 76,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'Объекты',
-                                  style:
-                                      Theme.of(context).textTheme.headlineLarge,
-                                ),
-                                IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(
-                                    Icons.info_outline_rounded,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 12.0,
-                            ),
-                            TextField(
-                              controller: _searchController,
-                              focusNode: searchFocus,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+                _AppBar(
+                  searchController: _searchController,
+                  appBarSearchFocus: appBarSearchFocus,
+                  searchFocus: searchFocus,
+                  isScrolled: innerBoxIsScrolled,
                 ),
               ];
             },
@@ -150,10 +105,92 @@ class _BodyState extends State<_Body> {
   }
 }
 
+class _AppBar extends StatelessWidget {
+  const _AppBar({
+    required TextEditingController searchController,
+    required this.appBarSearchFocus,
+    required this.searchFocus,
+    required this.isScrolled,
+  }) : _searchController = searchController;
+
+  final TextEditingController _searchController;
+  final FocusNode appBarSearchFocus;
+  final FocusNode searchFocus;
+  final bool isScrolled;
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverOverlapAbsorber(
+      handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+      sliver: SliverAppBar(
+        expandedHeight: 176.0,
+        pinned: true,
+        backgroundColor: isScrolled
+            ? services.get<ThemeValues>().colors.surfaceMain
+            : services.get<ThemeValues>().colors.background,
+        title: isScrolled
+            ? AppBarWithSearch(
+                controller: _searchController,
+                initialCollapsed: _searchController.text.isEmpty,
+                focusNode: appBarSearchFocus,
+              )
+            : null,
+        flexibleSpace: FlexibleSpaceBar(
+          // centerTitle: true,
+          background: Padding(
+            padding: const EdgeInsets.only(
+              left: 16.0,
+              right: 16.0,
+              top: 76,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Объекты',
+                      style: Theme.of(context).textTheme.headlineLarge,
+                    ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.info_outline_rounded,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 12.0,
+                ),
+                TextField(
+                  controller: _searchController,
+                  focusNode: searchFocus,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.search),
+                    filled: true,
+                    border: Theme.of(context)
+                        .inputDecorationTheme
+                        .border
+                        ?.copyWith(borderSide: BorderSide.none),
+                    // TODO: Should be used from icon pack or as svg
+                    // Use like this to save time
+                    suffixIcon: Image.asset('assets/search_suffix.png'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _ItemsView extends StatelessWidget {
-  const _ItemsView({
-    super.key,
-  });
+  const _ItemsView();
 
   @override
   Widget build(BuildContext context) {
@@ -198,7 +235,14 @@ class _ItemsView extends StatelessWidget {
                         pointsRemain: item.remainingPoints,
                         memoryPredict: item.totalPointsCount * 5,
                         memoryRemain: 0,
-                        onTap: () {},
+                        onTap: () {
+                          context.read<BuildingObjectsBloc>().add(
+                                BuildingObjectsSelectObject(
+                                  object: item,
+                                ),
+                              );
+                          context.push('/object');
+                        },
                       );
                     },
                     separatorBuilder: (context, index) {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class AppBarMainRow extends StatefulWidget {
-  const AppBarMainRow({
+class AppBarWithSearch extends StatefulWidget {
+  const AppBarWithSearch({
     super.key,
     required this.controller,
     required this.initialCollapsed,
@@ -12,10 +12,10 @@ class AppBarMainRow extends StatefulWidget {
   final FocusNode? focusNode;
 
   @override
-  State<AppBarMainRow> createState() => _AppBarMainRowState();
+  State<AppBarWithSearch> createState() => _AppBarWithSearchState();
 }
 
-class _AppBarMainRowState extends State<AppBarMainRow>
+class _AppBarWithSearchState extends State<AppBarWithSearch>
     with SingleTickerProviderStateMixin {
   late bool _isSearchActive;
   late AnimationController _controller;

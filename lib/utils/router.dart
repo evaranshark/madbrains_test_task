@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../presentation/pages/main/main_page.dart';
+import '../presentation/pages/object_scheme/object_scheme_page.dart';
 import '../presentation/pages/objects_list/objects_list_page.dart';
 
 class AppRouter {
@@ -33,6 +34,11 @@ class AppRouter {
               builder: (context, state) => const ObjectsListPage(),
             ),
           ],
+        ),
+        GoRoute(
+          path: '/object',
+          parentNavigatorKey: _rootNavigatorKey,
+          builder: (context, state) => const ObjectSchemePage(),
         ),
       ],
     );

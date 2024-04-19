@@ -9,6 +9,7 @@ class BuildingsRepositoryImpl implements BuildingsRepository {
   });
 
   final MockDataSource dataSource;
+  BuildingObject? _selectedObject;
 
   @override
   Future<List<BuildingObject>> fetchObjects() async {
@@ -19,7 +20,18 @@ class BuildingsRepositoryImpl implements BuildingsRepository {
         statusMessage: response.statusMessage,
       );
     }
-    return FetchRObjectsData.fromJson(response.data!).payload;
+    return FetchObjectsData.fromJson(response.data!).payload;
+  }
+
+  ///Will throw if no object been selected before
+  @override
+  BuildingObject getSelectedObject() {
+    return _selectedObject!;
+  }
+
+  @override
+  void selectObject(BuildingObject object) {
+    _selectedObject = object;
   }
 }
 

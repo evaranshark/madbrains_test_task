@@ -43,16 +43,25 @@ class ThemeValues {
     ),
   );
 
-  final selectedColor = const Color.fromARGB(
+  final colors = ColorValues();
+}
+
+class ColorValues {
+  final primary = const Color.fromARGB(
     255,
     74,
     111,
     244,
   );
-  final unselectedColor = const Color.fromARGB(
+  final primary50 = Color.fromARGB(255, 235, 239, 254);
+  final unselected = const Color.fromARGB(
     255,
     68,
     70,
     79,
   );
+  final background = const Color.fromARGB(255, 238, 242, 255);
+  final success = const Color.fromARGB(255, 76, 216, 116);
+  final successLight = const Color.fromARGB(255, 227, 249, 235);
+  final surfaceMain = Colors.white;
 }

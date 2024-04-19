@@ -6,14 +6,14 @@ part of 'fetch_objects_data.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-FetchRObjectsData _$FetchRObjectsDataFromJson(Map<String, dynamic> json) =>
-    FetchRObjectsData(
+FetchObjectsData _$FetchObjectsDataFromJson(Map<String, dynamic> json) =>
+    FetchObjectsData(
       payload: (json['payload'] as List<dynamic>)
           .map((e) => BuildingObject.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
-Map<String, dynamic> _$FetchRObjectsDataToJson(FetchRObjectsData instance) =>
+Map<String, dynamic> _$FetchObjectsDataToJson(FetchObjectsData instance) =>
     <String, dynamic>{
       'payload': instance.payload,
     };

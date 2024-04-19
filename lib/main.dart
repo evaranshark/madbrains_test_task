@@ -23,14 +23,15 @@ class _MainAppState extends State<MainApp> {
     final themeValues = services.get<ThemeValues>();
     return MaterialApp.router(
       theme: ThemeData.light().copyWith(
-        scaffoldBackgroundColor: const Color.fromARGB(255, 238, 242, 255),
-        colorScheme: const ColorScheme.light(
-          background: Color.fromARGB(255, 238, 242, 255),
-          surface: Colors.white,
+        scaffoldBackgroundColor: themeValues.colors.background,
+        colorScheme: ColorScheme.light(
+          background: themeValues.colors.background,
+          surface: themeValues.colors.surfaceMain,
           surfaceTint: Colors.transparent,
+          primary: themeValues.colors.primary,
         ),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color.fromARGB(255, 238, 242, 255),
+        appBarTheme: AppBarTheme(
+          backgroundColor: themeValues.colors.surfaceMain,
         ),
         snackBarTheme: ThemeData.light().snackBarTheme.copyWith(
               behavior: SnackBarBehavior.floating,
@@ -53,15 +54,15 @@ class _MainAppState extends State<MainApp> {
           iconTheme: MaterialStateProperty.resolveWith<IconThemeData>(
             (states) => const IconThemeData.fallback().copyWith(
               color: (states.contains(MaterialState.selected)
-                  ? themeValues.selectedColor
-                  : themeValues.unselectedColor),
+                  ? themeValues.colors.primary
+                  : themeValues.colors.unselected),
             ),
           ),
           labelTextStyle: MaterialStateProperty.resolveWith<TextStyle>(
             (states) => themeValues.labelMedium.copyWith(
               color: (states.contains(MaterialState.selected)
-                  ? themeValues.selectedColor
-                  : themeValues.unselectedColor),
+                  ? themeValues.colors.primary
+                  : themeValues.colors.unselected),
             ),
           ),
         ),

@@ -9,3 +9,9 @@ class BuildingObjectsFilter extends BuildingObjectsEvent {
 
   final String pattern;
 }
+
+class BuildingObjectsSelectObject extends BuildingObjectsEvent {
+  BuildingObjectsSelectObject({required this.object});
+
+  final BuildingObject object;
+}

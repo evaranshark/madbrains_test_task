@@ -6,11 +6,11 @@ import '../building_object.dart';
 part 'fetch_objects_data.g.dart';
 
 @JsonSerializable()
-class FetchRObjectsData with EquatableMixin {
-  FetchRObjectsData({required this.payload});
+class FetchObjectsData with EquatableMixin {
+  FetchObjectsData({required this.payload});
 
-  factory FetchRObjectsData.fromJson(Map<String, dynamic> json) =>
-      _$FetchRObjectsDataFromJson(json);
+  factory FetchObjectsData.fromJson(Map<String, dynamic> json) =>
+      _$FetchObjectsDataFromJson(json);
 
   final List<BuildingObject> payload;
 
