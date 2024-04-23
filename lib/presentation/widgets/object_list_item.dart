@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../utils/services.dart';
-import '../../utils/theme_values.dart';
-
 class ObjectListItem extends StatelessWidget {
   const ObjectListItem({
     super.key,
